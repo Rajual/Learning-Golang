@@ -1,0 +1,64 @@
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func Fibonacci(n int) int {
+	if n <= 1 {
+		return n
+	}
+	return Fibonacci(n-1) + Fibonacci(n-2)
+}
+
+type Memory struct {
+	f     Function
+	cache map[int]FunctionResult
+}
+
+type Function func(key int) (interface{}, error)
+
+type FunctionResult struct {
+	value interface{}
+	err   error
+}
+
+func NewCache(f Function) *Memory {
+	return &Memory{
+		f:     f,
+		cache: make(map[int]FunctionResult),
+	}
+}
+
+func (m *Memory) Get(key int) (interface{}, error) {
+	result, exists := m.cache[key]
+	if !exists {
+		result.value, result.err = m.f(key)
+		m.cache[key] = result
+	}
+	return result.value, result.err
+}
+
+//interface{} is same a <T> on Dart
+func GetFibonacci(n int) (interface{}, error) {
+	return Fibonacci(n), nil
+}
+
+func main() {
+	cacle := NewCache(GetFibonacci)
+	fibo := []int{42, 41, 42, 38}
+	for _, v := range fibo {
+		start := time.Now()
+
+		value, err := cacle.Get(v)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		fmt.Printf("%d, %s, %d", v, time.Since(start), value)
+		fmt.Println("")
+
+	}
+}
