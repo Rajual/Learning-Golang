@@ -11,6 +11,11 @@ func main() {
 }
 
 func division(dividendo, divisor int) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recuperandonos del panico!")
+		}
+	}()
 	validarDivisor(divisor)
 	fmt.Println(dividendo / divisor)
 }
