@@ -46,3 +46,9 @@ func (p *person) create(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(`{"message_type": "message","message": "Nuevo usuario creado"}`))
 
 }
+
+func (p *person) getAll(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+
+	}
+}
